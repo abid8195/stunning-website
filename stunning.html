@@ -1,0 +1,249 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ushno - The Most Beautiful Eid Queen</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/vue@3.2.47/dist/vue.global.js"></script>
+    <style>
+        :root {
+            --primary-color: #ff6b6b;
+            --secondary-color: #4ecdc4;
+        }
+        
+        body {
+            font-family: 'Comic Neue', cursive;
+            background-color: #fff5f5;
+        }
+        
+        .hero-section {
+            background: linear-gradient(135deg, #f6d365 0%, #fda085 100%);
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+        }
+        
+        .gallery-img {
+            border-radius: 15px;
+            transition: all 0.3s ease;
+            box-shadow: 0 10px 20px rgba(0,0,0,0.1);
+            cursor: pointer;
+        }
+        
+        .gallery-img:hover {
+            transform: scale(1.03);
+            box-shadow: 0 15px 30px rgba(0,0,0,0.2);
+        }
+        
+        .fact-card {
+            border: none;
+            border-radius: 15px;
+            overflow: hidden;
+            transition: all 0.3s ease;
+            background-color: white;
+        }
+        
+        .fact-card:hover {
+            transform: translateY(-10px);
+        }
+        
+        .btn-custom {
+            background-color: var(--primary-color);
+            border: none;
+            padding: 10px 25px;
+            border-radius: 50px;
+            font-weight: bold;
+            color: white;
+        }
+        
+        .btn-custom:hover {
+            background-color: #ff5252;
+            color: white;
+        }
+        
+        .modal-content {
+            border-radius: 20px;
+        }
+        
+        .heart {
+            color: var(--primary-color);
+            animation: pulse 1.5s infinite;
+        }
+        
+        @keyframes pulse {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.3); }
+            100% { transform: scale(1); }
+        }
+    </style>
+</head>
+<body>
+    <div id="app">
+        <!-- Hero Section -->
+        <section class="hero-section text-center text-white">
+            <div class="container">
+                <h1 class="display-3 fw-bold mb-4">Ushno <span class="heart">♥</span></h1>
+                <p class="lead fs-3 mb-5">The Most Beautiful Eid Queen</p>
+                <button @click="scrollToGallery" class="btn btn-custom btn-lg">See Her Eid Looks</button>
+            </div>
+        </section>
+
+        <!-- Gallery Section -->
+        <section id="gallery" class="py-5">
+            <div class="container">
+                <h2 class="text-center mb-5">Ushno's Stunning Eid Outfits <span class="heart">♥</span></h2>
+                
+                <div class="row g-4">
+                    <div class="col-md-6 col-lg-3" v-for="(image, index) in images" :key="index">
+                        <div class="fact-card h-100" @click="openModal(index)">
+                            <img :src="image.src" class="gallery-img w-100" :alt="image.desc">
+                            <div class="p-3">
+                                <h5>{{ image.title }}</h5>
+                                <p class="text-muted">{{ image.desc }}</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Fun Facts Section -->
+        <section class="py-5 bg-light">
+            <div class="container">
+                <h2 class="text-center mb-5">Why Ushno is Amazing <span class="heart">♥</span></h2>
+                
+                <div class="row g-4">
+                    <div class="col-md-6 col-lg-4" v-for="(fact, index) in funFacts" :key="index">
+                        <div class="fact-card h-100 p-4">
+                            <div class="d-flex align-items-center mb-3">
+                                <div class="bg-primary bg-opacity-10 p-3 rounded-circle me-3">
+                                    <span class="fs-4">{{ fact.emoji }}</span>
+                                </div>
+                                <h5 class="mb-0">{{ fact.title }}</h5>
+                            </div>
+                            <p>{{ fact.description }}</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Special Message -->
+        <section class="py-5 bg-primary text-white">
+            <div class="container text-center">
+                <h2 class="mb-4">To the Most Special Person <span class="heart">♥</span></h2>
+                <p class="lead mb-4">Ushno, you light up every room you walk into with your beautiful smile and kind heart.</p>
+                <p>This website is just a small token to show how amazing you are!</p>
+                <button @click="showSurprise = true" class="btn btn-light btn-lg mt-3">Click for a Surprise!</button>
+                
+                <div v-if="showSurprise" class="mt-4">
+                    <div class="d-flex justify-content-center">
+                        <div class="bg-white text-dark p-4 rounded-3" style="max-width: 600px;">
+                            <h3 class="text-primary">You're the Best!</h3>
+                            <p>Ushno, you're not just beautiful in these Eid pictures - your kindness, creativity, and caring nature make you truly special. Keep shining!</p>
+                            <p>From someone who admires you very much ❤️</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Image Modal -->
+        <div class="modal fade" id="imageModal" tabindex="-1" aria-hidden="true">
+            <div class="modal-dialog modal-dialog-centered modal-lg">
+                <div class="modal-content">
+                    <div class="modal-body text-center p-0">
+                        <img :src="selectedImage.src" class="img-fluid" :alt="selectedImage.desc">
+                    </div>
+                    <div class="modal-footer">
+                        <h5>{{ selectedImage.title }}</h5>
+                        <button type="button" class="btn btn-custom" data-bs-dismiss="modal">Close</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+        const { createApp } = Vue;
+        
+        createApp({
+            data() {
+                return {
+                    showSurprise: false,
+                    selectedImage: {},
+                    images: [
+                        {
+                            src: "Ushno1.jpg", // Replace with image 1 URL
+                            title: "Green & Gold Elegance",
+                            desc: "Wearing a beautiful dark green salwar kameez with dark green hijab and yellow stole, showing her mehndi"
+                        },
+                        {
+                            src: "Ushno2.jpg", // Replace with image 2 URL
+                            title: "Blue Beauty",
+                            desc: "Wearing a beautiful dark blue salwar kameez with yellow hijab and green stole, looking at bangles"
+                        },
+                        {
+                            src: "Ushno3.jpg", // Replace with image 3 URL
+                            title: "Woodland Princess",
+                            desc: "Posing beautifully beside wood logs wearing cream salwar kameez with dark violet hijab and light violet stole"
+                        },
+                        {
+                            src: "Ushno4.jpg", // Replace with image 4 URL
+                            title: "Lakeside Smile",
+                            desc: "Sitting beside a lake, smiling with her face resting on her hand, wearing creme hijab and red salwar kameez"
+                        }
+                    ],
+                    funFacts: [
+                        {
+                            emoji: "🍗",
+                            title: "Foodie Love",
+                            description: "Ushno's favorite dish is butter chicken - she can never resist it!"
+                        },
+                        {
+                            emoji: "🚗",
+                            title: "Car Enthusiast",
+                            description: "She dreams of owning a BMW one day - she's got great taste in cars!"
+                        },
+                        {
+                            emoji: "🎨",
+                            title: "Creative Soul",
+                            description: "Ushno has hidden talents in painting, singing, and dancing!"
+                        },
+                        {
+                            emoji: "👨‍👩‍👧‍👦",
+                            title: "Family First",
+                            description: "She loves hanging out with her cousins and cares deeply about her parents"
+                        },
+                        {
+                            emoji: "😤",
+                            title: "Pookie Alert",
+                            description: "She might get angry sometimes, but that just makes her more adorable!"
+                        },
+                        {
+                            emoji: "💖",
+                            title: "Heart of Gold",
+                            description: "Super nice and caring about everyone around her - a true gem!"
+                        }
+                    ]
+                }
+            },
+            methods: {
+                scrollToGallery() {
+                    document.getElementById('gallery').scrollIntoView({ behavior: 'smooth' });
+                },
+                openModal(index) {
+                    this.selectedImage = this.images[index];
+                    const modal = new bootstrap.Modal(document.getElementById('imageModal'));
+                    modal.show();
+                }
+            },
+            mounted() {
+                this.selectedImage = this.images[0];
+            }
+        }).mount('#app');
+    </script>
+</body>
+</html>
